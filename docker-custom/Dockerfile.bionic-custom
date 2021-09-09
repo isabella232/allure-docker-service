@@ -1,9 +1,9 @@
 ARG ARCH=amd64
 ARG JDK=adoptopenjdk:11-jre-openj9-bionic
 ARG BUILD_DATE
-ARG BUILD_VERSION=2.13.8-custom
+ARG BUILD_VERSION=dx-custom
 ARG BUILD_REF=na
-ARG ALLURE_RELEASE=2.13.8
+ARG ALLURE_RELEASE=custom
 ARG ALLURE_REPO=https://dl.bintray.com/qameta/maven/io/qameta/allure/allure-commandline
 ARG UID=1000
 ARG GID=1000
@@ -48,6 +48,8 @@ LABEL org.label-schema.build-date=${BUILD_DATE} \
     org.label-schema.arch=${ARCH} \
     authors="Frank Escobar <fescobar.systems@gmail.com>, Raymond Mouthaan <raymondmmouthaan@gmail.com>"
 
+COPY "allure-custom.zip" "/tmp/allure-custom.zip"
+
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
       tzdata \
@@ -59,8 +61,7 @@ RUN apt-get update && \
     pip3 install --upgrade pip && \
     pip install -Iv setuptools==47.1.1 wheel==0.34.2 waitress==1.4.4 && \
     pip install -Iv Flask==1.1.2 Flask-JWT-Extended==3.25.0 flask-swagger-ui==3.36.0 requests==2.23.0 && \
-    curl ${ALLURE_REPO}/${ALLURE_RELEASE}/allure-commandline-${ALLURE_RELEASE}.zip -L -o /tmp/allure-commandline.zip && \
-        unzip -q /tmp/allure-commandline.zip -d / && \
+    unzip -q /tmp/allure-custom.zip -d / && \
         apt-get remove -y unzip && \
         rm -rf /tmp/* && \
         rm -rf /var/lib/apt/lists/* && \
